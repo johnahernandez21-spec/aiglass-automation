@@ -543,7 +543,16 @@ def check_followups():
     try:
         gc = get_sheets_client()
         sh = gc.open_by_key(GOOGLE_SHEETS_ID)
-        ws = sh.worksheet("CRM Pipeline")
+        try:
+            ws = sh.worksheet("CRM Pipeline")
+        except gspread.WorksheetNotFound:
+            ws = sh.add_worksheet(title="CRM Pipeline", rows=1000, cols=20)
+            ws.append_row([
+                "Timestamp", "Name", "Phone", "Email", "Service Type",
+                "Status", "Quote Sent", "Booked Slot", "Follow-Up 1", "Follow-Up 2"
+            ])
+            logger.info("Created CRM Pipeline tab")
+            return  # Nothing to follow up on yet
         rows = ws.get_all_records()
 
         now = datetime.now()
