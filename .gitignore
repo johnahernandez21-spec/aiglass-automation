@@ -1,0 +1,6 @@
+# Secrets - NEVER commit these
+*.json
+.env
+__pycache__/
+*.pyc
+.DS_Store
