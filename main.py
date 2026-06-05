@@ -39,6 +39,7 @@ TWILIO_AUTH_TOKEN    = os.getenv("TWILIO_AUTH_TOKEN", "")
 TWILIO_FROM_NUMBER   = os.getenv("TWILIO_FROM_NUMBER", "")
 OWNER_PHONE          = os.getenv("OWNER_PHONE", "")
 CALENDAR_ID          = os.getenv("CALENDAR_ID", "tsuntsun21@gmail.com")
+BOOKING_URL          = os.getenv("BOOKING_URL", "aiglassplusnw.com/book")
 GOOGLE_SHEETS_ID     = os.getenv("GOOGLE_SHEETS_ID", "103aV_WElwDG80L-UyPMS9Bj01B914mJ_YQ8HvT892o8")
 META_APP_SECRET      = os.getenv("META_APP_SECRET", "")           # Set after Meta app created
 SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE", "/app/service_account.json")
@@ -259,7 +260,10 @@ async def handle_flat_glass_lead(lead: dict):
         f"Hi {lead['name'].split()[0]}! This is AiGlass+ (206) 775-1567.\n"
         f"Your FREE {lead['service_type']} estimate is booked for "
         f"{slot_str} Pacific time.\n"
-        f"We'll come to you. Questions? Call or text us anytime!"
+        f"We'll come to you!\n\n"
+        f"Want to pick your own time? Book online anytime:\n"
+        f"{BOOKING_URL}\n\n"
+        f"Questions? Call or text (206) 775-1567."
     )
     send_sms(lead["phone"], lead_msg)
 
@@ -291,7 +295,9 @@ async def handle_auto_glass_lead(lead: dict):
         f"Hi {lead['name'].split()[0]}! This is AiGlass+ (206) 775-1567.\n"
         f"Here's your instant quote for {vehicle}:\n\n"
         f"{quote}\n\n"
-        f"Mobile service - we come to you! Reply or call to book."
+        f"Mobile service - we come to you!\n"
+        f"Book your appointment online anytime:\n"
+        f"{BOOKING_URL}"
     )
     send_sms(lead["phone"], lead_msg)
 
@@ -580,8 +586,9 @@ def check_followups():
                 elif 24 <= hours_elapsed < 25 and row.get("Follow-Up 2") == "Pending":
                     msg = (
                         f"Hi {name}, AiGlass+ here. We still have availability this week "
-                        f"for your {service}. Same-day service available! "
-                        f"Call/text (206) 775-1567 to book."
+                        f"for your {service}. Same-day service available!\n"
+                        f"Book your slot in 60 seconds: {BOOKING_URL}\n"
+                        f"Or call/text (206) 775-1567."
                     )
                     send_sms(phone, msg)
                     ws.update_cell(i, 10, f"Sent {now.strftime('%m/%d %H:%M')}")
