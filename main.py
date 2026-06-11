@@ -39,7 +39,7 @@ TWILIO_AUTH_TOKEN    = os.getenv("TWILIO_AUTH_TOKEN", "")
 TWILIO_FROM_NUMBER   = os.getenv("TWILIO_FROM_NUMBER", "")
 OWNER_PHONE          = os.getenv("OWNER_PHONE", "")
 CALENDAR_ID          = os.getenv("CALENDAR_ID", "tsuntsun21@gmail.com")
-BOOKING_URL          = os.getenv("BOOKING_URL", "aiglassplusnw.com/book")
+BOOKING_URL          = os.getenv("BOOKING_URL", "https://calendly.com/aiglassplusnw")
 GOOGLE_SHEETS_ID     = os.getenv("GOOGLE_SHEETS_ID", "103aV_WElwDG80L-UyPMS9Bj01B914mJ_YQ8HvT892o8")
 META_APP_SECRET      = os.getenv("META_APP_SECRET", "")           # Set after Meta app created
 SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE", "/app/service_account.json")
@@ -75,6 +75,13 @@ openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
 # ─── FastAPI App ──────────────────────────────────────────────────────────────
 app = FastAPI(title="AiGlass+ Lead Automation", version="1.0.0")
+
+# ─── Booking Redirect ────────────────────────────────────────────────────────
+@app.get("/book")
+async def booking_redirect():
+    """Redirect aiglassplusnw.com/book → Calendly booking page"""
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="https://calendly.com/aiglassplusnw", status_code=302)
 
 # ─── Health Check ─────────────────────────────────────────────────────────────
 @app.get("/_health")
